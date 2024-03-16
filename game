@@ -1,0 +1,62 @@
+import sys
+
+# r: number of rows.
+# c: number of columns.
+# a: number of rounds between the time the alarm countdown is activated and the time the alarm goes off.
+r, c, a = [int(i) for i in input().split()]
+# Suponemos que las variables r, c, a ya están definidas como el número de filas, columnas,
+# y el número de rondas entre la activación de la alarma y su detonación.
+
+# Inicializa variables globales.
+path_to_goal = []
+reached_goal = False
+on_return_path = False
+
+def reverse_direction(direction):
+    """Devuelve la dirección opuesta para el regreso."""
+    opposites = {'UP': 'DOWN', 'DOWN': 'UP', 'LEFT': 'RIGHT', 'RIGHT': 'LEFT'}
+    return opposites[direction]
+
+def decide_next_move(kr, kc, visible_rows):
+    global reached_goal, on_return_path, path_to_goal
+    directions = [('UP', -1, 0), ('RIGHT', 0, 1), ('DOWN', 1, 0), ('LEFT', 0, -1)]
+
+    # Si Rick ha alcanzado el objetivo, marca el estado correspondiente.
+    if visible_rows[kr][kc] == 'C':
+        reached_goal = True
+        on_return_path = True
+
+    # Si aún no se ha alcanzado el objetivo, intenta moverse hacia él.
+    if not reached_goal:
+        for direction, dr, dc in directions:
+            rr, cc = kr + dr, kc + dc
+            if 0 <= rr < r and 0 <= cc < c:
+                if visible_rows[rr][cc] in ('.', 'C'):  # Espacio libre o el objetivo.
+                    path_to_goal.append(direction)
+                    return direction
+        # Si no se encuentra un movimiento seguro, es un indicativo de un posible problema.
+        return 'UP'  # Movimiento por defecto para evitar bucles, ajusta según sea necesario.
+
+    # Manejo del regreso.
+    if on_return_path and path_to_goal:
+        direction = reverse_direction(path_to_goal.pop())
+        return direction
+
+    
+
+# Asegúrate de inicializar on_return_path y path_to_goal antes del bucle del juego.
+on_return_path = False
+path_to_goal = []
+
+# Bucle de juego y lógica de entrada aquí.
+
+# Asume que el bucle del juego y la lógica de entrada están implementados como se mostró antes.
+
+
+# Simulación del bucle de juego.
+while True:
+    kr, kc = [int(i) for i in input().split()]
+    visible_rows = [input() for _ in range(r)]
+
+    next_move = decide_next_move(kr, kc, visible_rows)
+    print(next_move)  # Imprime el movimiento decidido.
